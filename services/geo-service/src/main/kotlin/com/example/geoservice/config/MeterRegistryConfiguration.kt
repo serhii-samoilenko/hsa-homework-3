@@ -1,4 +1,4 @@
-package com.example.weatherservice.config
+package com.example.geoservice.config
 
 import io.micrometer.core.aop.CountedAspect
 import io.micrometer.core.aop.TimedAspect
@@ -10,9 +10,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
 
-
 @Configuration
-class AutoTimingConfiguration {
+class MeterRegistryConfiguration {
     @Bean
     fun timedAspect(registry: MeterRegistry) = TimedAspect(registry)
 
@@ -21,7 +20,7 @@ class AutoTimingConfiguration {
 }
 
 @Component
-class GreetingBeanPostProcessor(
+class MeterRegistryBeanPostProcessor(
     @Value("\${spring.application.name}") private val applicationName: String
 ) : BeanPostProcessor {
     override fun postProcessAfterInitialization(bean: Any, beanName: String) = bean.also {

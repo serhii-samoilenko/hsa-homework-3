@@ -11,10 +11,12 @@ class WeatherPersistenceService(private val cityWeatherRepository: CityWeatherRe
 
     @Timed(value = "time", extraTags = ["domain", "persistence", "method", "putCityTemperature"])
     @Counted(value = "count", extraTags = ["operation", "putCityTemperature"])
-    fun putCityTemperature(city: String, temperature: Double): CityWeather =
-        cityWeatherRepository.save(CityWeather(city, temperature))
+    fun putCityWeather(cityWeather: CityWeather): CityWeather = cityWeatherRepository.save(cityWeather)
 
     @Timed(value = "time", extraTags = ["domain", "persistence", "method", "findByCity"])
     @Counted(value = "count", extraTags = ["operation", "findByCity"])
     fun findByCity(city: String): CityWeather? = cityWeatherRepository.findByCity(city)
+
+    @Counted(value = "count", extraTags = ["operation", "dropWeatherData"])
+    fun dropWeatherData() = cityWeatherRepository.deleteAll()
 }

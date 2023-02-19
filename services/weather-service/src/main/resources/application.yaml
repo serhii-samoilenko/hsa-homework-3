@@ -18,3 +18,7 @@ management:
         flavor: telegraf
         port: 8125
         step: 10s
+
+logging:
+  level:
+    com.example.weatherservice: DEBUG

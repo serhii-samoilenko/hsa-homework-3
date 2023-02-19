@@ -12,8 +12,8 @@ import java.math.BigDecimal
 @Service
 class LocationPersistenceService(private val locationRepository: LocationRepository) {
 
-    @Timed(value = "time", extraTags = ["domain", "persistence", "method", "findByCity"])
-    @Counted(value = "count", extraTags = ["operation", "findByCity"])
+    @Timed(value = "time", extraTags = ["domain", "persistence", "method", "findLocationByCoordinates"])
+    @Counted(value = "count", extraTags = ["operation", "findLocationByCoordinates"])
     fun findLocationByCoordinates(lat: BigDecimal, lon: BigDecimal): LocationDocument? = try {
         locationRepository.findByCoordinates("$lat:$lon")
     } catch (e: NoSuchIndexException) {
@@ -21,10 +21,21 @@ class LocationPersistenceService(private val locationRepository: LocationReposit
         null
     }
 
-    @Timed(value = "time", extraTags = ["domain", "persistence", "method", "putCityTemperature"])
-    @Counted(value = "count", extraTags = ["operation", "putCityTemperature"])
+    @Timed(value = "time", extraTags = ["domain", "persistence", "method", "saveAll"])
+    @Counted(value = "count", extraTags = ["operation", "saveAll"])
     fun saveAll(locationDocuments: List<LocationDocument>): Iterable<LocationDocument> =
         locationRepository.saveAll(locationDocuments)
+
+    @Timed(value = "time", extraTags = ["domain", "persistence", "method", "save"])
+    @Counted(value = "count", extraTags = ["operation", "save"])
+    fun save(locationDocument: LocationDocument) {
+        locationRepository.save(locationDocument)
+    }
+
+    @Counted(value = "count", extraTags = ["operation", "dropLocationData"])
+    fun dropLocationData() {
+        locationRepository.deleteAll()
+    }
 
     companion object : KLogging()
 }

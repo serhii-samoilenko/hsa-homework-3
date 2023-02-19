@@ -21,7 +21,7 @@ class AutoTimingConfiguration {
 }
 
 @Component
-class GreetingBeanPostProcessor(
+class MeterRegistryBeanPostProcessor(
     @Value("\${spring.application.name}") private val applicationName: String
 ) : BeanPostProcessor {
     override fun postProcessAfterInitialization(bean: Any, beanName: String) = bean.also {

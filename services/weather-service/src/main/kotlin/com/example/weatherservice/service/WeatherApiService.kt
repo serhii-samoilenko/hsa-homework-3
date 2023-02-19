@@ -24,7 +24,7 @@ class WeatherApiService(
     fun fetchWeather(city: String): WeatherData? = try {
         rateLimiter.acquire()
         weatherApiClient.getCurrentWeather(apiKey, city).let {
-            WeatherData(it.current.temp_c)
+            WeatherData(it.current.temp_c, it.location.lat, it.location.lon)
         }
     } catch (e: FeignException.BadRequest) {
         null

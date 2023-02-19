@@ -16,21 +16,19 @@ class LocationWeatherService(
     private val weatherServiceClient: WeatherServiceClient
 ) {
 
-    @Timed(value = "time", extraTags = ["domain", "general", "method", "getCityWeather"])
-    @Counted(value = "count", extraTags = ["operation", "getCityWeather"])
+    @Timed(value = "time", extraTags = ["domain", "general", "method", "getCitesWeatherByCoordinates"])
+    @Counted(value = "count", extraTags = ["operation", "getCitesWeatherByCoordinates"])
     fun getCitesWeatherByCoordinates(lat: BigDecimal, lon: BigDecimal): List<CityWeatherResponse> {
         logger.debug { "Fetching cities for coordinates: $lat,$lon" }
         var locationDocument = persistenceService.findLocationByCoordinates(lat, lon)
         logger.debug { "Found location document: $locationDocument" }
         if (locationDocument == null) {
-            val cities = weatherApiService.fetchCitiesByCoordinates(lat, lon)
-            logger.debug { "Found cities via API: $cities" }
-            locationDocument = LocationDocument("$lat:$lon", cities.map { it.name })
-            val cityLocationDocuments = cities.map { city ->
-                LocationDocument("${city.lat}:${city.lon}", listOf(city.name))
-            }
-            val documents = persistenceService.saveAll(listOf(locationDocument) + cityLocationDocuments)
-            logger.debug { "Saved ${documents.count()} documents" }
+            val city = weatherApiService.fetchCitiesByCoordinates(lat, lon).first()
+            logger.debug { "Found city via API: $city" }
+            locationDocument = LocationDocument("$lat:$lon", listOf(city.name))
+            val cityLocationDocument = LocationDocument("${city.lat}:${city.lon}", listOf(city.name))
+            val documents = persistenceService.saveAll(listOf(locationDocument, cityLocationDocument))
+            logger.debug { "Saved documents: $documents" }
         }
         val cityWeatherList = locationDocument.cities.parallelStream().map { cityName ->
             weatherServiceClient.getCityWeather(cityName)

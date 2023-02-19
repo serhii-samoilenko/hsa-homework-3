@@ -21,8 +21,8 @@ class WeatherApiService(
     private val rateLimiter = RateLimiter.create(100.0)
     private val apiKey: String = properties.weatherApi.key
 
-    @Timed(value = "time", extraTags = ["domain", "external", "method", "fetchWeather"])
-    @Counted(value = "count", extraTags = ["operation", "fetchWeather"])
+    @Timed(value = "time", extraTags = ["domain", "external", "method", "fetchCitiesByCoordinates"])
+    @Counted(value = "count", extraTags = ["operation", "fetchCitiesByCoordinates"])
     fun fetchCitiesByCoordinates(lat: BigDecimal, lon: BigDecimal): List<City> = try {
         rateLimiter.acquire()
         weatherApiClient.searchCitiesByLocation(apiKey, lat, lon)
