@@ -1,0 +1,122 @@
+services:
+
+  geo-service:
+    image: services/geo-service
+    build:
+      context: .
+      dockerfile: services/docker/fat.Dockerfile
+      args:
+        MODULE_NAME: geo-service
+    ports:
+      - '8081:8080'
+    depends_on:
+      - elasticsearch
+      - weather-service
+
+  weather-service:
+    image: services/weather-service
+    build:
+      context: .
+      dockerfile: services/docker/fat.Dockerfile
+      args:
+        MODULE_NAME: weather-service
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/weather
+      - MANAGEMENT_STATSD_METRICS_EXPORT_HOST=telegraf
+    ports:
+      - '8082:8080'
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: bitnami/mongodb
+    container_name: mongodb
+    restart: always
+    volumes:
+      - ./data/mongodb:/bitnami/mongodb
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    #      - MONGODB_USERNAME=admin
+    #      - MONGODB_PASSWORD=admin
+    #      - MONGODB_DATABASE=weather
+    #      - MONGODB_REPLICA_SET_MODE=primary
+    #      - MONGODB_REPLICA_SET_NAME=rs0
+    ports:
+      - '27017:27017'
+
+  elasticsearch:
+    image: bitnami/elasticsearch
+    container_name: elasticsearch
+    restart: always
+    volumes:
+      - ./data/elasticsearch:/bitnami/elasticsearch/data
+    environment:
+      - ELASTICSEARCH_USERNAME=admin
+      - ELASTICSEARCH_PASSWORD=admin
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+
+  socket-proxy:
+    image: tecnativa/docker-socket-proxy
+    container_name: socket-proxy
+    restart: always
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - '127.0.0.1:2375:2375'
+    environment:
+      - LOG_LEVEL=debug # debug,info,notice,warning,err,crit,alert,emerg
+      - CONTAINERS=1
+      - INFO=1
+
+  telegraf:
+    image: telegraf:alpine
+    container_name: telegraf
+#    privileged: true
+#    user: root
+#    user: telegraf:$$(stat -c '%g' /var/run/docker.sock)
+#    command: ["/entrypoint.sh"]
+    restart: always
+    volumes:
+      - ./config/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - '8125:8125/udp'
+    depends_on:
+      - socket-proxy
+      - influxdb
+
+  influxdb:
+    image: influxdb:1.8-alpine
+    container_name: influxdb
+    restart: always
+    volumes:
+      - ./data/influxdb:/var/lib/influxdb
+    environment:
+      - INFLUXDB_DB=telegraf
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=qwerty123qwerty123
+      - INFLUXDB_ADMIN_ENABLED=true
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
+      - INFLUXDB_USER=telegraf
+      - INFLUXDB_USER_PASSWORD=qwerty123qwerty123
+    ports:
+      - '8086:8086'
+
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana-server
+    restart: always
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+      - ./config/grafana/provisioning/:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-clock-panel
+    ports:
+      - '3000:3000'
+    depends_on:
+      - influxdb

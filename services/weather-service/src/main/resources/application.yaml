@@ -1,0 +1,18 @@
+spring:
+  application.name: weather-service
+
+app:
+  weather-api:
+    url: http://api.weatherapi.com/v1
+    # Dumb protection against dumb crawlers
+    obfuscated-key: ICAgICAgICAgIDQwMzVkOGRmZTEyMTQ5NGRiYmIyMjM4NTUyMzE2MDIgICAgICAgICAgICAgCg==
+
+management:
+  endpoints.web.exposure.include: metrics
+  statsd:
+    metrics:
+      export:
+        enabled: true
+        flavor: telegraf
+        port: 8125
+        step: 10s
