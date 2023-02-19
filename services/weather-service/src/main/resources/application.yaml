@@ -8,6 +8,7 @@ app:
     url: http://api.weatherapi.com/v1
     # Dumb protection against dumb crawlers
     obfuscated-key: ICAgICAgICAgIDQwMzVkOGRmZTEyMTQ5NGRiYmIyMjM4NTUyMzE2MDIgICAgICAgICAgICAgCg==
+    rps-limit: 100
 
 management:
   endpoints.web.exposure.include: metrics

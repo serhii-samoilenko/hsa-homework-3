@@ -27,7 +27,7 @@ class MeterRegistryBeanPostProcessor(
     override fun postProcessAfterInitialization(bean: Any, beanName: String) = bean.also {
         if (it is MeterRegistry) {
             logger.info { "Adding common tags to meter registry" }
-            it.config().commonTags("service", applicationName)
+            it.config().commonTags("application", applicationName)
         }
     }
 

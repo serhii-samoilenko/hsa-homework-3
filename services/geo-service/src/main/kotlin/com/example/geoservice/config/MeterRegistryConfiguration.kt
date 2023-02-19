@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
 
+
 @Configuration
 class MeterRegistryConfiguration {
     @Bean
@@ -17,6 +18,13 @@ class MeterRegistryConfiguration {
 
     @Bean
     fun countedAspect(registry: MeterRegistry) = CountedAspect(registry)
+//
+//    @Bean
+//    fun configurer(
+//        @Value("\${spring.application.name}") applicationName: String
+//    ) = MeterRegistryCustomizer { registry: MeterRegistry ->
+//        registry.config().commonTags("application", applicationName)
+//    }
 }
 
 @Component
@@ -26,7 +34,7 @@ class MeterRegistryBeanPostProcessor(
     override fun postProcessAfterInitialization(bean: Any, beanName: String) = bean.also {
         if (it is MeterRegistry) {
             logger.info { "Adding common tags to meter registry" }
-            it.config().commonTags("service", applicationName)
+            it.config().commonTags("application", applicationName)
         }
     }
 

@@ -1,14 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "InfluxDB",
-      "label": "telegraf",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "influxdb",
-      "pluginName": "InfluxDB"
-    }
-  ],
   "__requires": [
     {
       "type": "grafana",
@@ -45,7 +35,7 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": "InfluxDB",
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -74,7 +64,8 @@
       "panels": [],
       "repeat": null,
       "title": "Information",
-      "type": "row"
+      "type": "row",
+      "datasource": "InfluxDB"
     },
     {
       "cacheTimeout": null,
@@ -1031,7 +1022,8 @@
       "panels": [],
       "repeat": "Container",
       "title": "$Container",
-      "type": "row"
+      "type": "row",
+      "datasource": "InfluxDB"
     },
     {
       "aliasColors": {},

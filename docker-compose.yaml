@@ -3,15 +3,18 @@ services:
   geo-service:
     image: services/geo-service
     build:
-      context: .
-      dockerfile: services/docker/fat.Dockerfile
+      context: ./services
+      dockerfile: docker/fat.Dockerfile
       args:
         MODULE_NAME: geo-service
     environment:
-      - SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES=elasticsearch:9200
+      - APP_ELASTICSEARCH_URL=elasticsearch:9200
       - APP_WEATHER_SERVICE_URL=http://weather-service:8082
+      - APP_RANDOM_LOCATIONS_COUNT=10000
+      - APP_WEATHER_API_OBFUSCATED_KEY=ICAgICAgICAgIDQwMzVkOGRmZTEyMTQ5NGRiYmIyMjM4NTUyMzE2MDIgICAgICAgICAgICAgCg==
+      - APP_WEATHER_API_RPS_LIMIT=100
       - MANAGEMENT_STATSD_METRICS_EXPORT_HOST=telegraf
-      - LOG_LEVEL=INFO
+      - LOGGING_LEVEL_COM_EXAMPLE_GEOSERVICE=INFO
     ports:
       - '8081:8081'
     depends_on:
@@ -21,18 +24,33 @@ services:
   weather-service:
     image: services/weather-service
     build:
-      context: .
-      dockerfile: services/docker/fat.Dockerfile
+      context: ./services
+      dockerfile: docker/fat.Dockerfile
       args:
         MODULE_NAME: weather-service
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/weather
+      - APP_WEATHER_API_OBFUSCATED_KEY=ICAgICAgICAgIDQwMzVkOGRmZTEyMTQ5NGRiYmIyMjM4NTUyMzE2MDIgICAgICAgICAgICAgCg==
+      - APP_WEATHER_API_RPS_LIMIT=100
       - MANAGEMENT_STATSD_METRICS_EXPORT_HOST=telegraf
-      - LOG_LEVEL=INFO
+      - LOGGING_LEVEL_COM_EXAMPLE_WEATHERSERVICE=INFO
     ports:
       - '8082:8082'
     depends_on:
       - mongodb
+
+  nginx:
+    image: nginx:1.21.3-alpine
+    container_name: nginx
+    restart: always
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./data/nginx:/var/log/nginx
+    ports:
+      - '8080:8080'
+    depends_on:
+      - geo-service
+      - weather-service
 
   mongodb:
     image: bitnami/mongodb
@@ -113,7 +131,7 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_INSTALL_PLUGINS=grafana-clock-panel
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,natel-discrete-panel
     ports:
       - '3000:3000'
     depends_on:

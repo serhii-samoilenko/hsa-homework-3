@@ -10,7 +10,8 @@ data class WeatherServiceApplicationProperties(
 
     data class WeatherApi(
         val obfuscatedKey: String,
-        val url: String
+        val url: String,
+        val rpsLimit: Double
     ) {
         val key: String
             get() = lazy { Base64.getDecoder().decode(obfuscatedKey).decodeToString().trim() }.value

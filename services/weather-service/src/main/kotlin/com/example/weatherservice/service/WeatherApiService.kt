@@ -15,8 +15,8 @@ class WeatherApiService(
     private val weatherApiClient: WeatherApiClient,
     properties: WeatherServiceApplicationProperties
 ) {
-    // This API is too fast, rate limit it to 100 requests per second to see some latency
-    private val rateLimiter = RateLimiter.create(100.0)
+    // This API is too fast, rate limit it to see some latency
+    private val rateLimiter = RateLimiter.create(properties.weatherApi.rpsLimit)
     private val apiKey: String = properties.weatherApi.key
 
     @Timed(value = "time", extraTags = ["domain", "external", "method", "fetchWeather"])

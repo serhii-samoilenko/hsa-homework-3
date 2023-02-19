@@ -10,7 +10,7 @@ Content-Type: application/json
 Authorization: Token token123token123
 
 ###
-GET http://localhost:8080/weather/city/Sydney
+GET http://localhost:8082/weather/city/Sydney
 
 ###
 GET http://localhost:8080/actuator/metrics

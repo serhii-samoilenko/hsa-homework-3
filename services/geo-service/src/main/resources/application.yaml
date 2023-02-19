@@ -4,12 +4,16 @@ spring:
 server.port: 8081
 
 app:
+  elasticsearch:
+    url: localhost:9200
   weather-api:
     url: http://api.weatherapi.com/v1
     # Dumb protection against dumb crawlers
     obfuscated-key: ICAgICAgICAgIDQwMzVkOGRmZTEyMTQ5NGRiYmIyMjM4NTUyMzE2MDIgICAgICAgICAgICAgCg==
+    rps-limit: 100
   weather-service:
     url: http://localhost:8082
+  random-locations-count: 10000
 
 management:
   endpoints.web.exposure.include: metrics
