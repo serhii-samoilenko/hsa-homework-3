@@ -1,6 +1,8 @@
 spring:
   application.name: weather-service
 
+server.port: 8082
+
 app:
   weather-api:
     url: http://api.weatherapi.com/v1

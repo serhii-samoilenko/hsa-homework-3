@@ -14,3 +14,25 @@ GET http://localhost:8080/weather/city/Sydney
 
 ###
 GET http://localhost:8080/actuator/metrics
+
+###
+GET http://localhost:8081/weather/location/32.1:24.15
+
+###
+GET http://localhost:9200/_cat/indices?v
+
+
+#!/bin/bash
+
+# Set the base URL
+BASE_URL="http://example.com/path/to/endpoint"
+
+# Generate random latitude and longitude values
+LATITUDE=$(awk -v min=-90 -v max=90 'BEGIN{srand(); print min+rand()*(max-min)}')
+LONGITUDE=$(awk -v min=-180 -v max=180 'BEGIN{srand(); print min+rand()*(max-min)}')
+
+# Build the URL with the random parameters
+URL="${BASE_URL}?lat=${LATITUDE}&long=${LONGITUDE}"
+
+# Run the Apache Bench command
+ab -n 100 -c 10 "${URL}"
