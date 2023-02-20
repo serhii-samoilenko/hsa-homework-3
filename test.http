@@ -1,38 +1,8 @@
-GET localhost:8086/query?db=telegraf&q=SELECT+mean%28%22value%22%29+FROM+%22cpu%22+WHERE+time+%3E+now%28%29+-+1h+GROUP+BY+time%281m%29%2C+%22host%22
-Content-Type: application/json
-#Authorization: Token token123token123
-Authorization: Basic admin qwerty123qwerty123
-
-
-###
-GET localhost:8086/api/v2/config
-Content-Type: application/json
-Authorization: Token token123token123
-
 ###
 GET http://localhost:8082/weather/city/Sydney
 
 ###
-GET http://localhost:8080/actuator/metrics
+GET http://localhost:8081/actuator/metrics
 
 ###
 GET http://localhost:8081/weather/location/32.1:24.15
-
-###
-GET http://localhost:9200/_cat/indices?v
-
-
-#!/bin/bash
-
-# Set the base URL
-BASE_URL="http://example.com/path/to/endpoint"
-
-# Generate random latitude and longitude values
-LATITUDE=$(awk -v min=-90 -v max=90 'BEGIN{srand(); print min+rand()*(max-min)}')
-LONGITUDE=$(awk -v min=-180 -v max=180 'BEGIN{srand(); print min+rand()*(max-min)}')
-
-# Build the URL with the random parameters
-URL="${BASE_URL}?lat=${LATITUDE}&long=${LONGITUDE}"
-
-# Run the Apache Bench command
-ab -n 100 -c 10 "${URL}"
