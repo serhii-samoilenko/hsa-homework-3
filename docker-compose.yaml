@@ -1,7 +1,7 @@
 services:
 
   geo-service:
-    image: services/geo-service
+    image: ssamoilenko/highload-geo-service:latest
     build:
       context: ./services
       dockerfile: docker/fat.Dockerfile
@@ -22,7 +22,7 @@ services:
       - weather-service
 
   weather-service:
-    image: services/weather-service
+    image: ssamoilenko/highload-weather-service:latest
     build:
       context: ./services
       dockerfile: docker/fat.Dockerfile
