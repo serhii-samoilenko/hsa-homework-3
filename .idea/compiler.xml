@@ -2,10 +2,14 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
-      <module name="services.geo-service.aot" target="17" />
-      <module name="services.geo-service.aotTest" target="17" />
-      <module name="services.weather-service.aot" target="17" />
-      <module name="services.weather-service.aotTest" target="17" />
+      <module name="services.xor-service.main" target="17" />
+      <module name="services.xor-service.test" target="17" />
+      <module name="services.xor-service.aot" target="17" />
+      <module name="services.xor-service.aotTest" target="17" />
+      <module name="services.root-service.aot" target="17" />
+      <module name="services.root-service.aotTest" target="17" />
+      <module name="services.root-service.main" target="17" />
+      <module name="services.root-service.test" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

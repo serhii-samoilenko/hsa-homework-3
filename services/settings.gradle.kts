@@ -1,2 +1,2 @@
 rootProject.name = "services"
-include("geo-service", "weather-service")
+include("xor-service", "root-service")

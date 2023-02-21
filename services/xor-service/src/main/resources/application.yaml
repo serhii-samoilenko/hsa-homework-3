@@ -1,0 +1,25 @@
+spring:
+  application.name: xor-service
+
+server.port: 8082
+
+app:
+  elasticsearch:
+    url: localhost:9200
+  calculation:
+    cpsLimit: 100
+    cacheSize: 1000
+
+management:
+  endpoints.web.exposure.include: metrics
+  statsd:
+    metrics:
+      export:
+        enabled: true
+        flavor: telegraf
+        port: 8125
+        step: 10s
+logging:
+  level:
+    org.elasticsearch.client.RestClient: ERROR
+    com.example.xorservice: DEBUG

@@ -1,0 +1,26 @@
+spring:
+  application.name: root-service
+
+server.port: 8081
+
+app:
+  xor-service:
+    url: http://localhost:8082
+  calculation:
+    cps-limit: 100
+    cache-size: 1000
+  max-random-value: 1000000
+
+management:
+  endpoints.web.exposure.include: metrics
+  statsd:
+    metrics:
+      export:
+        enabled: true
+        flavor: telegraf
+        port: 8125
+        step: 10s
+
+logging:
+  level:
+    com.example.rootservice: DEBUG

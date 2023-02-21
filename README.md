@@ -3,5 +3,5 @@
 ## How to run
 
 ```bash
-docker-compose up
+docker-compose --profile siege up
 ```

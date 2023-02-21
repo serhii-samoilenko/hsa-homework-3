@@ -1,43 +1,46 @@
 services:
 
-  geo-service:
-    image: ssamoilenko/highload-geo-service:latest
+  root-service:
+    image: ssamoilenko/hsal2-root-service:latest
     build:
       context: ./services
       dockerfile: docker/fat.Dockerfile
       args:
-        MODULE_NAME: geo-service
+        MODULE_NAME: root-service
     environment:
-      - APP_ELASTICSEARCH_URL=elasticsearch:9200
-      - APP_WEATHER_SERVICE_URL=http://weather-service:8082
-      - APP_RANDOM_LOCATIONS_COUNT=10000
-      - APP_WEATHER_API_OBFUSCATED_KEY=ICAgICAgICAgIDQwMzVkOGRmZTEyMTQ5NGRiYmIyMjM4NTUyMzE2MDIgICAgICAgICAgICAgCg==
-      - APP_WEATHER_API_RPS_LIMIT=100
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/roots
+      - APP_XOR_SERVICE_URL=http://xor-service:8082
+      # CPS of a 'slow' operation compared to a cache lookup
+      - APP_CALCULATION_CPS_LIMIT=100
+      # How fast the cache will be filled
+      - APP_MAX_RANDOM_VALUE=100000
       - MANAGEMENT_STATSD_METRICS_EXPORT_HOST=telegraf
-      - LOGGING_LEVEL_COM_EXAMPLE_GEOSERVICE=INFO
+      - LOGGING_LEVEL_COM_EXAMPLE_ROOTSERVICE=INFO
     ports:
       - '8081:8081'
     depends_on:
-      - elasticsearch
-      - weather-service
+      - mongodb
+      - xor-service
 
-  weather-service:
-    image: ssamoilenko/highload-weather-service:latest
+  xor-service:
+    image: ssamoilenko/hsal2-xor-service:latest
     build:
       context: ./services
       dockerfile: docker/fat.Dockerfile
       args:
-        MODULE_NAME: weather-service
+        MODULE_NAME: xor-service
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/weather
-      - APP_WEATHER_API_OBFUSCATED_KEY=ICAgICAgICAgIDQwMzVkOGRmZTEyMTQ5NGRiYmIyMjM4NTUyMzE2MDIgICAgICAgICAgICAgCg==
-      - APP_WEATHER_API_RPS_LIMIT=100
+      - APP_ELASTICSEARCH_URL=elasticsearch:9200
+      # CPS of a 'slow' operation compared to a cache lookup
+      - APP_CALCULATION_CPS_LIMIT=100
+      # Number of ahead calculations to be cached
+      - APP_CALCULATION_CACHE_SIZE=100
       - MANAGEMENT_STATSD_METRICS_EXPORT_HOST=telegraf
-      - LOGGING_LEVEL_COM_EXAMPLE_WEATHERSERVICE=INFO
+      - LOGGING_LEVEL_COM_EXAMPLE_XORSERVICE=INFO
     ports:
       - '8082:8082'
     depends_on:
-      - mongodb
+      - elasticsearch
 
   nginx:
     image: nginx:1.21.3-alpine
@@ -49,8 +52,7 @@ services:
     ports:
       - '8080:8080'
     depends_on:
-      - geo-service
-      - weather-service
+      - root-service
 
   mongodb:
     image: bitnami/mongodb
@@ -136,3 +138,12 @@ services:
       - '3000:3000'
     depends_on:
       - influxdb
+
+  siege:
+    image: jstarcher/siege
+    container_name: siege
+    profiles:
+      - siege
+    depends_on:
+      - nginx
+    command: -c 10 -t 10m http://nginx:8080/root/xor/random
