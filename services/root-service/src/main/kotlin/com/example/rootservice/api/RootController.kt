@@ -23,7 +23,7 @@ class RootController(
     @GetMapping("/root/xor/random")
     fun getRootOfXorRandom(): RootCacheEntity {
         val modifier = Random.nextLong(0L, properties.maxRandomValue)
-        logger.info { "Random values: $base, $modifier" }
+        logger.debug { "Random values: $base, $modifier" }
         return rootService.getRootOfXor(base, modifier)
     }
 

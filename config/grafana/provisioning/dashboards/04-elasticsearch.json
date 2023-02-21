@@ -52,9 +52,7 @@
   "links": [
     {
       "icon": "external link",
-      "tags": [
-        "escluster"
-      ],
+      "tags": [],
       "type": "dashboards"
     }
   ],
@@ -5340,9 +5338,7 @@
   "refresh": "1m",
   "schemaVersion": 20,
   "style": "dark",
-  "tags": [
-    "escluster"
-  ],
+  "tags": [],
   "templating": {
     "list": [
       {
@@ -5392,7 +5388,7 @@
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -5420,8 +5416,8 @@
       "30d"
     ]
   },
-  "timezone": "",
+  "timezone": "browser",
   "title": "Elasticsearch",
-  "uid": "000000023",
+  "uid": "hsal2-04",
   "version": 18
 }

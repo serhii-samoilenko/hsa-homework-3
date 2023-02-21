@@ -26,7 +26,8 @@
     }
   ],
   "id": null,
-  "title": "InfluxDB Docker",
+  "uid": "hsal2-03",
+  "title": "Docker Containers",
   "tags": [],
   "style": "dark",
   "timezone": "browser",
@@ -34,7 +35,7 @@
   "sharedCrosshair": false,
   "hideControls": false,
   "time": {
-    "from": "now-1h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {

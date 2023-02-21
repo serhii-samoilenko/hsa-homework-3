@@ -1678,7 +1678,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -1707,7 +1707,8 @@
     ]
   },
   "timezone": "browser",
-  "title": "MongoDB Monitoring Dashboard",
+  "title": "MongoDB",
+  "uid": "hsal2-05",
   "version": 19,
   "description": "Dashboard for MongoDB server statistics metrics collected by Telegraf agent."
 }

@@ -1687,7 +1687,7 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -1715,8 +1715,8 @@
       "30d"
     ]
   },
-  "timezone": "",
-  "title": "Docker overview",
-  "uid": "jPqOU7Mmk",
+  "timezone": "browser",
+  "title": "Docker Overview",
+  "uid": "hsal2-02",
   "version": 10
 }
