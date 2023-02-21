@@ -12,7 +12,7 @@ app:
   max-random-value: 1000000
 
 management:
-  endpoints.web.exposure.include: metrics
+  endpoints.web.exposure.include: health,info,metrics
   statsd:
     metrics:
       export:

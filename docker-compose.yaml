@@ -1,3 +1,4 @@
+version: '3.9'
 services:
 
   root-service:
@@ -18,9 +19,14 @@ services:
       - LOGGING_LEVEL_COM_EXAMPLE_ROOTSERVICE=INFO
     ports:
       - '8081:8081'
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "-O", "-", "http://localhost:8081/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
     depends_on:
-      - mongodb
-      - xor-service
+      mongodb:
+        condition: service_healthy
 
   xor-service:
     image: ssamoilenko/hsal2-xor-service:latest
@@ -39,8 +45,14 @@ services:
       - LOGGING_LEVEL_COM_EXAMPLE_XORSERVICE=INFO
     ports:
       - '8082:8082'
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "-O", "-", "http://localhost:8082/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
 
   nginx:
     image: nginx:1.21.3-alpine
@@ -52,7 +64,10 @@ services:
     ports:
       - '8080:8080'
     depends_on:
-      - root-service
+      root-service:
+        condition: service_healthy
+      xor-service:
+        condition: service_healthy
 
   mongodb:
     image: bitnami/mongodb
@@ -62,8 +77,14 @@ services:
       - ./data/mongodb:/bitnami/mongodb
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
+      - LOG_LEVEL=info # debug,info,notice,warning,err,crit,alert,emerg
     ports:
       - '27017:27017'
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping').ok", "--quiet" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   elasticsearch:
     image: elasticsearch:7.17.9
@@ -78,6 +99,11 @@ services:
     ports:
       - '9200:9200'
       - '9300:9300'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
   socket-proxy:
     image: tecnativa/docker-socket-proxy
@@ -89,7 +115,7 @@ services:
     ports:
       - '127.0.0.1:2375:2375'
     environment:
-      - LOG_LEVEL=info # debug,info,notice,warning,err,crit,alert,emerg
+      - LOG_LEVEL=warning # debug,info,notice,warning,err,crit,alert,emerg
       - CONTAINERS=1
       - INFO=1
 
@@ -103,8 +129,10 @@ services:
     ports:
       - '8125:8125/udp'
     depends_on:
-      - socket-proxy
-      - influxdb
+      socket-proxy:
+        condition: service_started
+      influxdb:
+        condition: service_healthy
 
   influxdb:
     image: influxdb:1.8-alpine
@@ -122,6 +150,11 @@ services:
       - INFLUXDB_USER_PASSWORD=qwerty123qwerty123
     ports:
       - '8086:8086'
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "-O", "-", "http://localhost:8086/health" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   grafana:
     image: grafana/grafana-oss
@@ -137,7 +170,8 @@ services:
     ports:
       - '3000:3000'
     depends_on:
-      - influxdb
+      influxdb:
+        condition: service_healthy
 
   siege:
     image: jstarcher/siege
