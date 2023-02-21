@@ -32,9 +32,9 @@ services:
     environment:
       - APP_ELASTICSEARCH_URL=elasticsearch:9200
       # CPS of a 'slow' operation compared to a cache lookup
-      - APP_CALCULATION_CPS_LIMIT=100
+      - APP_CALCULATION_CPS_LIMIT=500
       # Number of ahead calculations to be cached
-      - APP_CALCULATION_CACHE_SIZE=100
+      - APP_CALCULATION_CACHE_SIZE=20
       - MANAGEMENT_STATSD_METRICS_EXPORT_HOST=telegraf
       - LOGGING_LEVEL_COM_EXAMPLE_XORSERVICE=INFO
     ports:
@@ -146,4 +146,4 @@ services:
       - siege
     depends_on:
       - nginx
-    command: -c 10 -t 10m http://nginx:8080/root/xor/random
+    command: -c 10 -t 30m http://nginx:8080/root/xor/random

@@ -10,8 +10,8 @@ class XorApiService(
     private val xorServiceClient: XorServiceClient
 ) {
 
-    @Timed(value = "time", extraTags = ["domain", "external", "method", "fetchXorResult"])
-    @Counted(value = "count", extraTags = ["operation", "fetchXorResult"])
+    @Timed(value = "time", extraTags = ["method", "fetchXorResult"])
+    @Counted(value = "count", extraTags = ["method", "fetchXorResult"])
     fun fetchXorResult(base: Long, modifier: Long): Long =
         xorServiceClient.getXorResult(base, modifier).result
 }

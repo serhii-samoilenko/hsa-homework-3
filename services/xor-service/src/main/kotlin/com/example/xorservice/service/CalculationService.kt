@@ -17,8 +17,8 @@ class CalculationService(
     private val rateLimiter = RateLimiter.create(properties.calculation.cpsLimit)
     private val cacheSize = properties.calculation.cacheSize
 
-    @Timed(value = "time", extraTags = ["domain", "calculation", "method", "calculateXor"])
-    @Counted(value = "count", extraTags = ["operation", "calculateXor"])
+    @Timed(value = "time", extraTags = ["method", "calculateXor"])
+    @Counted(value = "count", extraTags = ["method", "calculateXor"])
     fun calculateXor(base: Long, modifier: Long): List<Pair<Long, Long>> {
         rateLimiter.acquire()
         val median = min(modifier, cacheSize.toLong() / 2)

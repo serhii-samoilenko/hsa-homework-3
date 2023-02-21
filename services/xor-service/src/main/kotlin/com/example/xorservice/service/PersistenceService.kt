@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service
 @Service
 class PersistenceService(private val xorCacheRepository: XorCacheRepository) {
 
-    @Timed(value = "time", extraTags = ["domain", "persistence", "method", "lookupCache"])
-    @Counted(value = "count", extraTags = ["operation", "lookupCache"])
+    @Timed(value = "time", extraTags = ["cache", "lookup"])
+    @Counted(value = "count", extraTags = ["cache", "lookup"])
     fun lookupCache(base: Long, modifier: Long): CacheDocument? = try {
         // TODO: This is not a good way to do this, but it works for now
         xorCacheRepository
@@ -23,13 +23,13 @@ class PersistenceService(private val xorCacheRepository: XorCacheRepository) {
         null
     }
 
-    @Timed(value = "time", extraTags = ["domain", "persistence", "method", "saveToCache"])
-    @Counted(value = "count", extraTags = ["operation", "save"])
+    @Timed(value = "time", extraTags = ["cache", "update"])
+    @Counted(value = "count", extraTags = ["cache", "update"])
     fun saveToCache(cacheDocument: CacheDocument) {
         xorCacheRepository.save(cacheDocument)
     }
 
-    @Counted(value = "count", extraTags = ["operation", "dropCache"])
+    @Counted(value = "count", extraTags = ["cache", "drop"])
     fun dropCache() {
         xorCacheRepository.deleteAll()
     }

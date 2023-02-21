@@ -16,8 +16,8 @@ class CalculationService(
     // To emulate expensive operation, limiting total rate
     private val rateLimiter = RateLimiter.create(properties.calculation.cpsLimit)
 
-    @Timed(value = "time", extraTags = ["domain", "calculation", "method", "calculateRoot"])
-    @Counted(value = "count", extraTags = ["operation", "calculateRoot"])
+    @Timed(value = "time", extraTags = ["method", "calculateRoot"])
+    @Counted(value = "count", extraTags = ["method", "calculateRoot"])
     fun calculateRoot(value: Long): Long {
         rateLimiter.acquire()
         return sqrt(value.toDouble()).toLong()

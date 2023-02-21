@@ -1,8 +1,7 @@
 package com.example.rootservice.service
 
 import com.example.rootservice.persistence.entity.RootCacheEntity
-import io.micrometer.core.annotation.Counted
-import io.micrometer.core.annotation.Timed
+import io.micrometer.core.instrument.MeterRegistry
 import mu.KLogging
 import org.springframework.stereotype.Service
 
@@ -10,11 +9,12 @@ import org.springframework.stereotype.Service
 class RootService(
     private val persistenceService: PersistenceService,
     private val xorApiService: XorApiService,
-    private val calculationService: CalculationService
+    private val calculationService: CalculationService,
+    meterRegistry: MeterRegistry
 ) {
+    private val hitsCounter = meterRegistry.counter("count", "cache", "hits")
+    private val misesCounter = meterRegistry.counter("count", "cache", "mises")
 
-    @Timed(value = "time", extraTags = ["domain", "general", "method", "getRootOfXor"])
-    @Counted(value = "count", extraTags = ["operation", "getRootOfXor"])
     fun getRootOfXor(base: Long, modifier: Long): RootCacheEntity {
         logger.debug { "Fetching xor result for $base and $modifier" }
         val xorResult = xorApiService.fetchXorResult(base, modifier)
@@ -22,9 +22,11 @@ class RootService(
         val cache = persistenceService.lookupCache(xorResult)
         if (cache != null) {
             logger.debug { "Cache hit, returning cached value" }
+            hitsCounter.increment()
             return cache
         }
         logger.debug { "Cache miss, calculating new value" }
+        misesCounter.increment()
         val result = calculationService.calculateRoot(xorResult)
         logger.debug { "Calculated root: $result" }
         val newCache = RootCacheEntity(xorResult, result)
