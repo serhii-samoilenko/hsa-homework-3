@@ -103,7 +103,7 @@ services:
       test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
       interval: 5s
       timeout: 5s
-      retries: 20
+      retries: 25
 
   socket-proxy:
     image: tecnativa/docker-socket-proxy
@@ -172,12 +172,12 @@ services:
     depends_on:
       influxdb:
         condition: service_healthy
+      telegraf:
+        condition: service_started
 
   siege:
     image: jstarcher/siege
     container_name: siege
-    profiles:
-      - siege
     depends_on:
       - nginx
     command: -c 10 -t 30m http://nginx:8080/root/xor/random
