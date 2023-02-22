@@ -3,7 +3,7 @@
 Resource monitoring systems
 ---
 
-## How to run demo
+## How to run the demo
 
 Preferred way:
 
@@ -11,7 +11,7 @@ Preferred way:
 ./demo.sh
 ```
 
-After everything starts, you can open [http://localhost:3000](http://localhost:3000) to see Grafana dashboards.
+After everything starts, you can open [http://localhost:3000](http://localhost:3000) to see the Grafana dashboards.
 Credentials:
 
 ```
@@ -19,7 +19,7 @@ username: admin
 password: admin
 ```
 
-There are 8 [preconfigured dashboards](http://localhost:3000/dashboards) int the General folder.
+There are 8 [preconfigured dashboards](http://localhost:3000/dashboards) in the General folder.
 
 **In case of any trouble running the demo, please review [the presentation](PRESENTATION.md)**
 
@@ -28,20 +28,20 @@ Or see [this section](#running-docker-compose) on how to run the demo manually.
 ## Demo project structure
 
 The idea of a project is to calculate a simple mathematical formula `sqrt(xor(a, b))` in a most entertaining way: *root-service*
-receives `a` and `b` via REST endpoint, forwards execution of `xor()` part to the *xor-service* using ist REST API, and performs `sqrt()` on
+receives `a` and `b` via REST endpoint, forwards execution of `xor()` part to the *xor-service* using its REST API, and performs `sqrt()` on
 the result.
 
 To emulate complexity/latency, both services have a limitation on how many mathematical operations can be performed in a second. Also, both
 services utilize caching to speed up calculations. Eventually, caching gives a performance boost.
 
 *root-service* uses MongoDB as a cache, *xor-service* uses Elasticsearch. *xor-service* also precalculates additional results in advance, so
-it's cache improves performance much sooner.
+its cache improves performance much sooner.
 
-I used such an extended setup to experiment with Zipkin tracing and a bunch of other ideas, but didn't have time to implement them for now.
+I used such an extended setup to experiment with Zipkin tracing and a bunch of other ideas but didn't have time to implement them for now.
 
 ![services diagram](docs/services.png "Services diagram")
 
-Project contains in total 10 containers:
+The project contains a total of 10 containers:
 
 * Nginx - reverse proxy for root-service
 * root-service - main service to receive traffic
@@ -86,14 +86,14 @@ The project intentionally contains `.idea` and `.iml` files to make it easier to
 
 ## Running docker-compose
 
-The demo is fully enclosed in the [docker-compose.yaml](docker-compose.yaml). Instead of using `./demo.sh` You can also run both services
+The demo is fully enclosed in the [docker-compose.yaml](docker-compose.yaml). Instead of using `./demo.sh`, You can also run both services
 and monitoring by:
 
 ```bash
 docker-compose up nginx grafana -d
 ```
 
-Sample load won't start in this case. To run it, use:
+The sample load won't start in this case. To run it, use:
 
 ```bash
 docker-compose up siege -d
@@ -104,3 +104,4 @@ or manually:
 ```bash
 siege -c 10 -t 10m http://localhost:8081/root/xor/random
 ```
+

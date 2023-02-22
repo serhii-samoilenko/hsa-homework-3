@@ -41,12 +41,12 @@ JVM metrics for both services
 
 ## [Application Business Metrics](http://localhost:3000/d/hsal2-07/application-business-metrics)
 
-Metrics about the application itself, like requests per second, response time, etc.
+Metrics about the application itself, like requests per second, response time, cache performance, method invocations, etc.
 
 ![application business metrics](docs/business.png "Application Business Metrics")
 
 ## [Nginx Basics](http://localhost:3000/d/hsal2-08/nginx-basics)
 
-Basic metrics about Nginx. Looks like open source version of nginx doesn't  provide much information.
+Basic metrics about Nginx. Looks like open source version of nginx doesn't provide much information.
 
 ![nginx basics](docs/nginx.png "Nginx Basics")
