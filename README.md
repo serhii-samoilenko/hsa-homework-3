@@ -21,6 +21,8 @@ password: admin
 
 There are 8 [preconfigured dashboards](http://localhost:3000/dashboards) in the General folder.
 
+Run `docker-compose down` to stop the demo.
+
 **In case of any trouble running the demo, please review [the presentation](PRESENTATION.md)**
 
 Or see [this section](#running-docker-compose) on how to run the demo manually.
@@ -45,7 +47,7 @@ The project contains a total of 10 containers:
 
 * Nginx - reverse proxy for root-service
 * root-service - main service to receive traffic
-* xor-service - secondary service for an additional hop
+* xor-service - secondary service for an additional network hop
 * MongoDB - cache for root-service
 * Elasticsearch - cache for xor-service
 * Telegraf - metrics collector
