@@ -2,7 +2,6 @@
 
 Presentation
 ---
-<base target="_blank">
 
 [Grafana](http://localhost:3000) contains 8 dashboards for different aspects of monitoring:
 

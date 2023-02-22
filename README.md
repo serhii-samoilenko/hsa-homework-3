@@ -2,7 +2,6 @@
 
 Resource monitoring systems
 ---
-<base target="_blank">
 
 ## How to run demo
 
